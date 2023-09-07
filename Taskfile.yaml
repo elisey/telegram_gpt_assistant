@@ -1,0 +1,54 @@
+# https://taskfile.dev
+
+version: '3'
+
+tasks:
+  mypy:
+    cmds:
+      - mypy telegram_gpt_assistant
+  black:fix:
+    cmds:
+      - black .
+  black:check:
+    cmds:
+      - black --check .
+  isort:fix:
+    cmds:
+      - isort .
+  isort:check:
+    cmds:
+      - isort --check .
+  flake8:
+    cmds:
+      - flake8 .
+  ruff:
+    cmds:
+      - ruff .
+  format:
+    - task: black:fix
+    - task: isort:fix
+  lint:
+    deps:
+      - task: black:check
+      - task: isort:check
+      - task: mypy
+      - task: flake8
+      - task: ruff
+  all:
+    - task: lint
+
+  build:
+    cmds:
+      - docker build -t telegram_gpt_assistant:latest .
+  run:
+    cmds:
+      - docker run -d --name telegram_gpt_assistant_contrainer telegram_gpt_assistant:latest
+  stop:
+    cmds:
+      - docker stop telegram_gpt_assistant_contrainer
+  logs:
+    cmds:
+      - docker logs  telegram_gpt_assistant_contrainer
+  remove:
+    cmds:
+      - docker rm telegram_gpt_assistant_contrainer
