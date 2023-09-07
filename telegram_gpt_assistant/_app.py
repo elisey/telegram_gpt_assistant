@@ -23,6 +23,7 @@ class App:
             settings.history_ttl,
         )
         self.start_message = settings.start_message
+        self.allowed_users = set(settings.allowed_users)
 
     def run(self) -> None:
         self.application = tg_ext.ApplicationBuilder().token(self.token).build()
@@ -53,10 +54,16 @@ class App:
 
         message_text = update.message.text
         user_id = str(update.effective_user.id)
+
+        logger.info(f"{user_id}: {message_text}")
+
+        if user_id not in self.allowed_users:
+            logger.info("Not allowed user. skip", extra={"user_id": user_id})
+            return
         try:
             response = self.assistant.exchange(user_id, message_text)
         except gpt_assistant_lib.GptAssistantBaseException as e:
             logger.exception(f"GPT assistant exception, {e}")
             return
-
+        logger.info(f"assistant: {response}")
         await update.message.reply_text(response)
