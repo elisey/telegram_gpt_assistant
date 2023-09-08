@@ -47,7 +47,7 @@ tasks:
       - docker build -t telegram_gpt_assistant:latest .
   run:
     cmds:
-      - docker run -d --name telegram_gpt_assistant_contrainer telegram_gpt_assistant:latest
+      - docker run -d --restart always --name telegram_gpt_assistant_contrainer telegram_gpt_assistant:latest
   stop:
     cmds:
       - docker stop telegram_gpt_assistant_contrainer
