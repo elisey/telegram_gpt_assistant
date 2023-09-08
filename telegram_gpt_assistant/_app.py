@@ -57,7 +57,7 @@ class App:
 
         logger.info(f"{user_id}: {message_text}")
 
-        if user_id not in self.allowed_users:
+        if self.allowed_users and user_id not in self.allowed_users:
             logger.info("Not allowed user. skip", extra={"user_id": user_id})
             return
         try:
